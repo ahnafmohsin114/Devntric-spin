@@ -134,19 +134,26 @@
     ctx.arcTo(x, y, x+w, y, r);
   }
 
-  const PALETTE = ['#7c3aed', '#3b82f6', '#14b8a6', '#22c55e', '#f97316', '#ec4899'];
+  const PALETTE = [
+  '#9B87F5', // Purple
+  '#82B5FF', // Blue
+  '#7FE7E8', // Cyan
+  '#A7E07A', // Green
+  '#FFC46B', // Orange
+  '#FF98C3'  // Pink
+];
 
   /* ---------------------------------------------------------------------
      State
      --------------------------------------------------------------------- */
-  const defaultItems = [
-    { id: uid(), name: 'iPhone 15',      color: '#7c3aed', icon: 'phone' },
-    { id: uid(), name: 'AirPods Pro',    color: '#3b82f6', icon: 'headphones' },
-    { id: uid(), name: 'Gift Card $50',  color: '#14b8a6', icon: 'card' },
-    { id: uid(), name: 'Premium Hoodie', color: '#22c55e', icon: 'hoodie' },
-    { id: uid(), name: 'Sticker Pack',   color: '#f97316', icon: 'sticker' },
-    { id: uid(), name: 'Try Again',      color: '#ec4899', icon: 'refresh' },
-  ];
+ const defaultItems = [
+  { id: uid(), name: 'iPhone 15',      color: '#9B87F5', icon: 'phone' },
+  { id: uid(), name: 'AirPods Pro',    color: '#82B5FF', icon: 'headphones' },
+  { id: uid(), name: 'Gift Card $50',  color: '#7FE7E8', icon: 'card' },
+  { id: uid(), name: 'Premium Hoodie', color: '#A7E07A', icon: 'hoodie' },
+  { id: uid(), name: 'Sticker Pack',   color: '#FFC46B', icon: 'sticker' },
+  { id: uid(), name: 'Try Again',      color: '#FF98C3', icon: 'refresh' }
+];
 
   let state = {
     items: loadItems() || defaultItems,
@@ -192,26 +199,27 @@
   const resultSub = document.getElementById('resultSub');
 
   /* ---------------------------------------------------------------------
-     Theme toggle
+     Dark mode (controlled from the settings modal only — the header's
+     standalone theme/help buttons were removed)
      --------------------------------------------------------------------- */
-  const themeToggle = document.getElementById('themeToggle');
-  themeToggle.addEventListener('click', () => {
-    state.isDark = !state.isDark;
-    document.body.setAttribute('data-theme', state.isDark ? 'dark' : 'light');
-  });
-
-  document.getElementById('helpBtn').addEventListener('click', () => {
-    alert('Add prizes on the left, tune your spin settings on the right, then hit SPIN. Good luck!');
-  });
+  function setDarkMode(isDark){
+    state.isDark = isDark;
+    document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    syncModalControls();
+  }
 
   /* ---------------------------------------------------------------------
-     App settings modal (header gear icon)
+     App settings modal (header gear icon) — this is the single source
+     of truth for all spin/appearance settings now that the sidebar
+     settings panel has been removed.
      --------------------------------------------------------------------- */
   const appSettingsModal = document.getElementById('appSettingsModal');
   const modalThemeToggle = document.getElementById('modalThemeToggle');
   const modalSoundToggle = document.getElementById('modalSoundToggle');
   const modalConfettiToggle = document.getElementById('modalConfettiToggle');
   const modalDurationGroup = document.getElementById('modalDurationGroup');
+  const modalModeGroup = document.getElementById('modalModeGroup');
+  const modalThemeSwatches = document.getElementById('modalThemeSwatches');
 
   function syncModalControls(){
     modalThemeToggle.classList.toggle('is-on', state.isDark);
@@ -223,6 +231,9 @@
     modalDurationGroup.querySelectorAll('.pill-option').forEach(b => {
       b.classList.toggle('is-active', parseInt(b.dataset.value, 10) === state.duration);
     });
+    modalModeGroup.querySelectorAll('.segmented-option').forEach(b => {
+      b.classList.toggle('is-active', b.dataset.value === state.mode);
+    });
   }
 
   document.getElementById('settingsBtn').addEventListener('click', () => {
@@ -232,41 +243,68 @@
   document.getElementById('closeAppSettings').addEventListener('click', () => appSettingsModal.setAttribute('hidden',''));
   appSettingsModal.addEventListener('click', (e) => { if(e.target === appSettingsModal) appSettingsModal.setAttribute('hidden',''); });
 
-  modalThemeToggle.addEventListener('click', () => { themeToggle.click(); syncModalControls(); });
-  modalSoundToggle.addEventListener('click', () => { document.getElementById('soundToggle').click(); syncModalControls(); });
-  modalConfettiToggle.addEventListener('click', () => { document.getElementById('confettiToggle').click(); syncModalControls(); });
+  modalThemeToggle.addEventListener('click', () => setDarkMode(!state.isDark));
+
+  function wireModalSwitch(el, key){
+    el.addEventListener('click', () => {
+      state[key] = !state[key];
+      el.classList.toggle('is-on', state[key]);
+      el.setAttribute('aria-checked', String(state[key]));
+    });
+  }
+  wireModalSwitch(modalSoundToggle, 'sound');
+  wireModalSwitch(modalConfettiToggle, 'confetti');
+
   modalDurationGroup.addEventListener('click', (e) => {
     const btn = e.target.closest('.pill-option');
     if(!btn) return;
-    const val = btn.dataset.value;
-    const mainBtn = document.querySelector(`#durationGroup .pill-option[data-value="${val}"]`);
-    if(mainBtn) mainBtn.click();
-    syncModalControls();
+    modalDurationGroup.querySelectorAll('.pill-option').forEach(b => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    state.duration = parseInt(btn.dataset.value, 10);
   });
 
-  document.getElementById('resetDataBtn').addEventListener('click', () => {
-    if(!confirm('Reset the wheel back to the default 6 prizes? This clears your current list.')) return;
-    state.items = defaultItems.map(i => ({ ...i, id: uid() }));
-    persist(); renderItems(); drawWheel();
-    resetResult();
-    appSettingsModal.setAttribute('hidden','');
+  /* ---------------------------------------------------------------------
+     Mode-specific slogan under the header
+     --------------------------------------------------------------------- */
+  const SLOGANS = {
+    normal:      'ONE SPIN. ONE WIN.',
+    elimination: 'SPIN TO SURVIVE. LAST ONE WINS.',
+  };
+  const taglineEl = document.getElementById('tagline');
+  function updateTagline(){
+    taglineEl.style.opacity = '0';
+    setTimeout(() => {
+      taglineEl.textContent = SLOGANS[state.mode] || SLOGANS.normal;
+      taglineEl.style.opacity = '1';
+    }, 120);
+  }
+
+  modalModeGroup.addEventListener('click', (e) => {
+    const btn = e.target.closest('.segmented-option');
+    if(!btn) return;
+    modalModeGroup.querySelectorAll('.segmented-option').forEach(b => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    state.mode = btn.dataset.value;
+    updateTagline();
   });
+
+  updateTagline();
 
   /* ---------------------------------------------------------------------
      Color theme swatches (brand accent)
      --------------------------------------------------------------------- */
-  const THEME_COLORS = {
-    violet: { a: '#7c3aed', b: '#3b82f6' },
-    blue:   { a: '#2563eb', b: '#0ea5e9' },
-    teal:   { a: '#0ea5a4', b: '#22d3ee' },
-    green:  { a: '#16a34a', b: '#4ade80' },
-    orange: { a: '#ea580c', b: '#fbbf24' },
-    pink:   { a: '#db2777', b: '#f472b6' },
-  };
-  document.getElementById('themeSwatches').addEventListener('click', (e) => {
+const THEME_COLORS = {
+  violet: { a: '#9B87F5', b: '#82B5FF' },
+  blue:   { a: '#82B5FF', b: '#7FE7E8' },
+  teal:   { a: '#7FE7E8', b: '#A7E07A' },
+  green:  { a: '#A7E07A', b: '#FFC46B' },
+  orange: { a: '#FFC46B', b: '#FF98C3' },
+  pink:   { a: '#FF98C3', b: '#9B87F5' }
+};
+  modalThemeSwatches.addEventListener('click', (e) => {
     const btn = e.target.closest('.swatch');
     if(!btn) return;
-    document.querySelectorAll('#themeSwatches .swatch').forEach(s => s.classList.remove('is-active'));
+    modalThemeSwatches.querySelectorAll('.swatch').forEach(s => s.classList.remove('is-active'));
     btn.classList.add('is-active');
     const t = THEME_COLORS[btn.dataset.theme];
     document.documentElement.style.setProperty('--accent', t.a);
@@ -274,35 +312,8 @@
   });
 
   /* ---------------------------------------------------------------------
-     Settings: duration / mode / toggles
+     More settings (advanced) — lives inside the modal
      --------------------------------------------------------------------- */
-  document.getElementById('durationGroup').addEventListener('click', (e) => {
-    const btn = e.target.closest('.pill-option');
-    if(!btn) return;
-    document.querySelectorAll('#durationGroup .pill-option').forEach(b => b.classList.remove('is-active'));
-    btn.classList.add('is-active');
-    state.duration = parseInt(btn.dataset.value, 10);
-  });
-
-  document.getElementById('modeGroup').addEventListener('click', (e) => {
-    const btn = e.target.closest('.segmented-option');
-    if(!btn) return;
-    document.querySelectorAll('#modeGroup .segmented-option').forEach(b => b.classList.remove('is-active'));
-    btn.classList.add('is-active');
-    state.mode = btn.dataset.value;
-  });
-
-  function wireSwitch(id, key){
-    const el = document.getElementById(id);
-    el.addEventListener('click', () => {
-      state[key] = !state[key];
-      el.classList.toggle('is-on', state[key]);
-      el.setAttribute('aria-checked', String(state[key]));
-    });
-  }
-  wireSwitch('soundToggle', 'sound');
-  wireSwitch('confettiToggle', 'confetti');
-
   const moreBtn = document.getElementById('moreSettingsBtn');
   const morePanel = document.getElementById('moreSettingsPanel');
   moreBtn.addEventListener('click', () => {
@@ -318,6 +329,14 @@
   });
   document.getElementById('removeAfterWin').addEventListener('change', e => {
     state.removeAfterWin = e.target.checked;
+  });
+
+  document.getElementById('resetDataBtn').addEventListener('click', () => {
+    if(!confirm('Reset the wheel back to the default 6 prizes? This clears your current list.')) return;
+    state.items = defaultItems.map(i => ({ ...i, id: uid() }));
+    persist(); renderItems(); drawWheel();
+    resetResult();
+    appSettingsModal.setAttribute('hidden','');
   });
 
   /* ---------------------------------------------------------------------
@@ -411,7 +430,7 @@
   const addModal = document.getElementById('addItemModal');
   const newItemName = document.getElementById('newItemName');
   const colorPick = document.getElementById('newItemColorPick');
-  let pickedColor = '#7c3aed';
+ let pickedColor = '#9B87F5';
 
   document.getElementById('addItemBtn').addEventListener('click', () => {
     newItemName.value = '';
@@ -814,7 +833,14 @@
   resizeConfetti();
 
   function fireConfetti(){
-    const colors = state.items.map(i => i.color).concat(['#7c3aed', '#3b82f6', '#f97316']);
+    const colors = state.items.map(i => i.color).concat([
+  '#9B87F5',
+  '#82B5FF',
+  '#7FE7E8',
+  '#A7E07A',
+  '#FFC46B',
+  '#FF98C3'
+]);
     const count = 140;
     for(let i = 0; i < count; i++){
       confettiParticles.push({

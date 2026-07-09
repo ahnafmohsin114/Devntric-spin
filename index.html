@@ -21,20 +21,18 @@
   </a>
 
   <div class="header-actions">
-    <button class="icon-btn" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">
-      <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
-      <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-    </button>
-    <button class="icon-btn" id="helpBtn" title="Help" aria-label="Help">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2-3 4"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-    </button>
     <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Settings">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
     </button>
   </div>
 </header>
 
-<p class="tagline">ONE SPIN. ONE WIN.</p>
+<div class="spin-section">
+
+    <div class="tagline-wrapper">
+    <p class="tagline" id="tagline">ONE SPIN. ONE WIN.</p>
+</div>
+
 
 <!-- ===================== MAIN ===================== -->
 <main class="app-grid">
@@ -95,72 +93,6 @@
       </div>
     </div>
   </section>
-
-  <!-- RIGHT SETTINGS PANEL -->
-  <section class="panel right-panel" aria-label="Spin settings">
-    <h2 class="panel-title accent">Settings</h2>
-    <div class="title-underline"></div>
-
-    <div class="settings-group">
-      <p class="settings-label">Duration</p>
-      <div class="pill-group" id="durationGroup">
-        <button class="pill-option" data-value="3">3s</button>
-        <button class="pill-option is-active" data-value="5">5s</button>
-        <button class="pill-option" data-value="8">8s</button>
-        <button class="pill-option" data-value="10">10s</button>
-      </div>
-    </div>
-
-    <div class="settings-group">
-      <p class="settings-label">Spin Mode</p>
-      <div class="segmented" id="modeGroup">
-        <button class="segmented-option is-active" data-value="normal">Normal</button>
-        <button class="segmented-option" data-value="elimination">Elimination</button>
-      </div>
-    </div>
-
-    <div class="settings-group toggle-row">
-      <p class="settings-label">Sound</p>
-      <button class="switch is-on" id="soundToggle" role="switch" aria-checked="true"><span class="switch-knob"></span></button>
-    </div>
-
-    <div class="settings-group toggle-row">
-      <p class="settings-label">Confetti</p>
-      <button class="switch is-on" id="confettiToggle" role="switch" aria-checked="true"><span class="switch-knob"></span></button>
-    </div>
-
-    <div class="settings-group">
-      <p class="settings-label">Color Theme</p>
-      <div class="swatch-group" id="themeSwatches">
-        <button class="swatch is-active" data-theme="violet" style="--sw:#7c3aed"></button>
-        <button class="swatch" data-theme="blue" style="--sw:#2563eb"></button>
-        <button class="swatch" data-theme="teal" style="--sw:#0ea5a4"></button>
-        <button class="swatch" data-theme="green" style="--sw:#22c55e"></button>
-        <button class="swatch" data-theme="orange" style="--sw:#f97316"></button>
-        <button class="swatch" data-theme="pink" style="--sw:#ec4899"></button>
-      </div>
-    </div>
-
-    <button class="btn btn-ghost btn-block" id="moreSettingsBtn">
-      More Settings
-      <svg class="icon icon-sm chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-    </button>
-
-    <div class="more-settings" id="moreSettingsPanel" hidden>
-      <label class="field">
-        <span>Winner announcement delay (ms)</span>
-        <input type="number" id="announceDelay" value="250" min="0" step="50" />
-      </label>
-      <label class="field checkbox-field">
-        <input type="checkbox" id="allowRepeatWinners" checked />
-        <span>Allow repeat winners (Normal mode)</span>
-      </label>
-      <label class="field checkbox-field">
-        <input type="checkbox" id="removeAfterWin" />
-        <span>Remove winning item after every spin</span>
-      </label>
-    </div>
-  </section>
 </main>
 
 <!-- ===================== FOOTER ===================== -->
@@ -208,7 +140,7 @@
 <!-- App settings modal (opened from the header gear icon) -->
 <div class="modal-overlay" id="appSettingsModal" hidden>
   <div class="modal modal-wide">
-    <h3>App Settings</h3>
+    <h3>Settings</h3>
 
     <div class="settings-group toggle-row">
       <p class="settings-label">Dark theme</p>
@@ -216,27 +148,63 @@
     </div>
 
     <div class="settings-group">
-      <p class="settings-label">Default spin duration</p>
+      <p class="settings-label">Spin duration</p>
       <div class="pill-group" id="modalDurationGroup">
         <button class="pill-option" data-value="3">3s</button>
-        <button class="pill-option" data-value="5">5s</button>
+        <button class="pill-option is-active" data-value="5">5s</button>
         <button class="pill-option" data-value="8">8s</button>
         <button class="pill-option" data-value="10">10s</button>
       </div>
     </div>
 
+    <div class="settings-group">
+      <p class="settings-label">Spin Mode</p>
+      <div class="segmented" id="modalModeGroup">
+        <button class="segmented-option is-active" data-value="normal">Normal</button>
+        <button class="segmented-option" data-value="elimination">Elimination</button>
+      </div>
+    </div>
+
     <div class="settings-group toggle-row">
       <p class="settings-label">Sound</p>
-      <button class="switch" id="modalSoundToggle" role="switch" aria-checked="true"><span class="switch-knob"></span></button>
+      <button class="switch is-on" id="modalSoundToggle" role="switch" aria-checked="true"><span class="switch-knob"></span></button>
     </div>
 
     <div class="settings-group toggle-row">
       <p class="settings-label">Confetti</p>
-      <button class="switch" id="modalConfettiToggle" role="switch" aria-checked="true"><span class="switch-knob"></span></button>
+      <button class="switch is-on" id="modalConfettiToggle" role="switch" aria-checked="true"><span class="switch-knob"></span></button>
     </div>
 
     <div class="settings-group">
-      <p class="settings-label">Data</p>
+      <p class="settings-label">Color Theme</p>
+      <div class="swatch-group" id="modalThemeSwatches">
+        <button class="swatch is-active" data-theme="violet" style="--sw:#7c3aed"></button>
+        <button class="swatch" data-theme="blue" style="--sw:#2563eb"></button>
+        <button class="swatch" data-theme="teal" style="--sw:#0ea5a4"></button>
+        <button class="swatch" data-theme="green" style="--sw:#22c55e"></button>
+        <button class="swatch" data-theme="orange" style="--sw:#f97316"></button>
+        <button class="swatch" data-theme="pink" style="--sw:#ec4899"></button>
+      </div>
+    </div>
+
+    <button class="btn btn-ghost btn-block" id="moreSettingsBtn" aria-expanded="false">
+      More Settings
+      <svg class="icon icon-sm chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+
+    <div class="more-settings" id="moreSettingsPanel" hidden>
+      <label class="field">
+        <span>Winner announcement delay (ms)</span>
+        <input type="number" id="announceDelay" value="250" min="0" step="50" />
+      </label>
+      <label class="field checkbox-field">
+        <input type="checkbox" id="allowRepeatWinners" checked />
+        <span>Allow repeat winners (Normal mode)</span>
+      </label>
+      <label class="field checkbox-field">
+        <input type="checkbox" id="removeAfterWin" />
+        <span>Remove winning item after every spin</span>
+      </label>
       <button class="btn btn-ghost btn-block" id="resetDataBtn">Reset prizes to defaults</button>
     </div>
 
