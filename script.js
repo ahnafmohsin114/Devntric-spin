@@ -17,7 +17,11 @@
 
   document.getElementById('brandLink').href = CONFIG.companyUrl;
   document.getElementById('linkedinCreditLink').href = CONFIG.linkedInUrl;
-  document.getElementById('linkedinIconLink').href = CONFIG.linkedInUrl;
+const linkedinIconLink = document.getElementById("linkedinIconLink");
+
+if (linkedinIconLink) {
+    linkedinIconLink.href = CONFIG.linkedInUrl;
+}
 
   /* ---------------------------------------------------------------------
      Icon library — simple stroke icons drawn on canvas (per-segment)
