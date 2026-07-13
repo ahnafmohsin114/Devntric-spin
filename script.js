@@ -147,11 +147,11 @@
      State
      --------------------------------------------------------------------- */
  const defaultItems = [
-  { id: uid(), name: 'iPhone 15',      color: '#9B87F5', icon: 'phone' },
-  { id: uid(), name: 'AirPods Pro',    color: '#82B5FF', icon: 'headphones' },
-  { id: uid(), name: 'Gift Card $50',  color: '#7FE7E8', icon: 'card' },
-  { id: uid(), name: 'Premium Hoodie', color: '#A7E07A', icon: 'hoodie' },
-  { id: uid(), name: 'Sticker Pack',   color: '#FFC46B', icon: 'sticker' },
+  { id: uid(), name: 'iPhone 15',      color: '#9B87F5' },
+  { id: uid(), name: 'AirPods Pro',    color: '#82B5FF' },
+  { id: uid(), name: 'Gift Card $50',  color: '#7FE7E8' },
+  { id: uid(), name: 'Premium Hoodie', color: '#A7E07A' },
+  { id: uid(), name: 'Sticker Pack',   color: '#FFC46B' },
   { id: uid(), name: 'Try Again',      color: '#FF98C3', icon: 'refresh' }
 ];
 
@@ -184,6 +184,33 @@
       localStorage.setItem(CONFIG.storageKey, JSON.stringify({ items: state.items }));
     } catch(e){ /* storage unavailable, fail silently */ }
   }
+  function updateModeButtons() {
+
+    if (state.mode === "normal") {
+
+        normalModeBtn.classList.add("active");
+        eliminationModeBtn.classList.remove("active");
+
+    } else {
+
+        eliminationModeBtn.classList.add("active");
+        normalModeBtn.classList.remove("active");
+
+    }
+
+}function updateTagline() {
+
+    if (state.mode === "normal") {
+
+        tagline.textContent = "ONE SPIN. ONE WIN.";
+
+    } else {
+
+        tagline.textContent = "ELIMINATE UNTIL ONE REMAINS.";
+
+    }
+
+}
 
   /* ---------------------------------------------------------------------
      DOM references
@@ -197,6 +224,10 @@
   const resultCard = document.getElementById('resultCard');
   const resultTitle = document.getElementById('resultTitle');
   const resultSub = document.getElementById('resultSub');
+  const spinAgainBtn = document.getElementById("spinAgainBtn");
+  const normalModeBtn = document.getElementById("normalModeBtn");
+const eliminationModeBtn = document.getElementById("eliminationModeBtn");
+const tagline = document.getElementById("tagline");
 
   /* ---------------------------------------------------------------------
      Dark mode (controlled from the settings modal only — the header's
@@ -430,7 +461,7 @@ const THEME_COLORS = {
   const addModal = document.getElementById('addItemModal');
   const newItemName = document.getElementById('newItemName');
   const colorPick = document.getElementById('newItemColorPick');
- let pickedColor = '#9B87F5';
+  let pickedColor = '#7c3aed';
 
   document.getElementById('addItemBtn').addEventListener('click', () => {
     newItemName.value = '';
@@ -452,18 +483,55 @@ const THEME_COLORS = {
     btn.classList.add('is-active');
   });
 
-  function addNewItem(){
-    const name = newItemName.value.trim();
-    if(!name) { newItemName.focus(); return; }
-    const icons = Object.keys(ICONS);
-    const icon = icons[state.items.length % icons.length];
-    state.items.push({ id: uid(), name, color: pickedColor, icon });
-    persist(); renderItems(); drawWheel();
+function addNewItem(){
+
+    const name = newItemName.value
+        .trim()
+        .replace(/\p{Extended_Pictographic}/gu, "");
+
+    if(!name){
+        newItemName.focus();
+        return;
+    }
+
+    state.items.push({
+        id: uid(),
+        name,
+        color: pickedColor
+    });
+
+    persist();
+    renderItems();
+    drawWheel();
+
     addModal.setAttribute('hidden','');
-  }
+
+}
   document.getElementById('confirmAddItem').addEventListener('click', addNewItem);
   newItemName.addEventListener('keydown', (e) => { if(e.key === 'Enter') addNewItem(); });
+normalModeBtn.addEventListener("click", () => {
 
+    state.mode = "normal";
+
+    persist();
+
+    updateModeButtons();
+
+    updateTagline();
+
+});
+
+eliminationModeBtn.addEventListener("click", () => {
+
+    state.mode = "elimination";
+
+    persist();
+
+    updateModeButtons();
+
+    updateTagline();
+
+});
   /* ---------------------------------------------------------------------
      Wheel drawing
      --------------------------------------------------------------------- */
@@ -512,7 +580,7 @@ const THEME_COLORS = {
 
       ctx.beginPath();
       ctx.moveTo(cx, cy);
-      ctx.arc(cx, cy, R * 0.94, start, end);
+      ctx.arc(cx, cy, R * 0.97, start, end);
       ctx.closePath();
 
       const grad = ctx.createLinearGradient(
@@ -721,37 +789,83 @@ const THEME_COLORS = {
     if(state.sound) playChime();
   }
 
-  function handleSpinResult(landed, landedIndex){
-    if(state.mode === 'elimination'){
-      // In Elimination mode, whatever the wheel lands on is knocked out —
-      // the prize that survives every spin is the eventual winner.
-      state.items.splice(landedIndex, 1);
-      persist(); renderItems(); drawWheel(); snapRotation();
+function handleSpinResult(landed, landedIndex){
 
-      if(state.items.length === 1){
-        const finalWinner = state.items[0];
-        setTimeout(() => declareWinner(finalWinner), 350);
-      } else if(state.items.length === 0){
-        resultCard.classList.remove('is-winner');
-        resultTitle.textContent = `${landed.name} eliminated`;
-        resultSub.textContent = 'No prizes left on the wheel.';
-      } else {
-        resultCard.classList.remove('is-winner');
-        resultTitle.textContent = `${landed.name} eliminated`;
-        resultSub.textContent = `${state.items.length} prizes left — spin again!`;
-        if(state.sound) playEliminateSound();
-      }
-      return;
+    const resultOverlay = document.getElementById("resultOverlay");
+    const closeResult = document.getElementById("closeResult");
+    closeResult.addEventListener("click", () => {
+    resultOverlay.classList.add("hidden");
+});
+
+    if(state.mode === 'elimination'){
+
+        // In Elimination mode, whatever the wheel lands on is knocked out.
+        state.items.splice(landedIndex, 1);
+
+        persist();
+        renderItems();
+        drawWheel();
+        snapRotation();
+
+        if(state.items.length === 1){
+
+            const finalWinner = state.items[0];
+
+            setTimeout(() => {
+                declareWinner(finalWinner);
+
+                if(resultOverlay){
+                    resultOverlay.classList.remove("hidden");
+                }
+
+            },350);
+
+        }else if(state.items.length === 0){
+
+            resultCard.classList.remove("is-winner");
+            resultTitle.textContent = `${landed.name} eliminated`;
+            resultSub.textContent = "No prizes left on the wheel.";
+
+            if(resultOverlay){
+                resultOverlay.classList.remove("hidden");
+            }
+
+        }else{
+
+            resultCard.classList.remove("is-winner");
+            resultTitle.textContent = `${landed.name} eliminated`;
+            resultSub.textContent = `${state.items.length} prizes left — spin again!`;
+
+            if(state.sound){
+                playEliminateSound();
+            }
+
+            if(resultOverlay){
+                resultOverlay.classList.remove("hidden");
+            }
+
+        }
+
+        return;
     }
 
-    // Normal mode: whatever the wheel lands on is the winner.
+    // Normal mode
     declareWinner(landed);
 
-    if(state.removeAfterWin || !state.allowRepeatWinners){
-      state.items.splice(landedIndex, 1);
-      persist(); renderItems(); drawWheel(); snapRotation();
+    if(resultOverlay){
+        resultOverlay.classList.remove("hidden");
     }
-  }
+
+    if(state.removeAfterWin || !state.allowRepeatWinners){
+
+        state.items.splice(landedIndex,1);
+
+        persist();
+        renderItems();
+        drawWheel();
+        snapRotation();
+    }
+}
 
   /* ---------------------------------------------------------------------
      Sound (Web Audio API — no external files needed)
@@ -885,9 +999,27 @@ const THEME_COLORS = {
     }
   }
 
-  /* ---------------------------------------------------------------------
-     Init
-     --------------------------------------------------------------------- */
-  renderItems();
-  drawWheel();
+/* ---------------------------------------------------------------------
+   Init
+   --------------------------------------------------------------------- */
+
+// Remove all emojis from existing prize names
+state.items = state.items.map(item => ({
+    ...item,
+    name: item.name.replace(/\p{Extended_Pictographic}/gu, "").trim()
+}));
+
+persist();
+
+renderItems();
+drawWheel();
+updateModeButtons();
+updateTagline();
+const year = document.getElementById("currentYear");
+
+if(year){
+
+    year.textContent = new Date().getFullYear();
+
+}
 })();

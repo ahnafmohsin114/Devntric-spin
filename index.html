@@ -29,8 +29,31 @@
 
 <div class="spin-section">
 
-    <div class="tagline-wrapper">
-    <p class="tagline" id="tagline">ONE SPIN. ONE WIN.</p>
+    <p class="tagline" id="tagline">
+        ONE SPIN. ONE WIN.
+    </p>
+    <div class="mode-selector">
+
+    <span class="mode-label">Spin Mode</span>
+
+    <div class="mode-options">
+
+        <button
+            id="normalModeBtn"
+            class="mode-btn active"
+            type="button">
+            Normal
+        </button>
+
+        <button
+            id="eliminationModeBtn"
+            class="mode-btn"
+            type="button">
+            Elimination
+        </button>
+
+    </div>
+
 </div>
 
 
@@ -76,22 +99,47 @@
       <span>SPIN</span>
     </button>
 
+    <!-- ================= RESULT POPUP ================= -->
+
+<div class="result-overlay hidden" id="resultOverlay">
+
     <div class="result-card" id="resultCard">
-      <p class="result-label">Result</p>
-      <div class="result-body">
-        <svg class="result-icon" id="resultIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1"></path>
-          <path d="M2 21l6.5-6.5"></path>
-          <path d="M15 5l1.5-1.5"></path>
-          <path d="M18 8l1.5-1.5"></path>
-          <path d="M12 3l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"></path>
-        </svg>
-        <div>
-          <p class="result-title" id="resultTitle">Spin the wheel!</p>
-          <p class="result-sub" id="resultSub">Good luck!</p>
+
+        <button
+            class="close-result"
+            id="closeResult"
+            aria-label="Close Result">
+            ✕
+        </button>
+
+<div class="result-header">
+
+    <h2 id="resultTitle">Ready to Spin</h2>
+
+    <p id="resultSub">
+        Click SPIN to try your luck.
+    </p>
+
+</div>
+
+
+<div class="result-message">
+    Good Luck!
+</div>
+
         </div>
-      </div>
+
+        <div class="result-actions">
+
+
+
+        </div>
+
     </div>
+
+</div>
+
+<!-- ================= END RESULT POPUP ================= -->
   </section>
 </main>
 
@@ -109,6 +157,12 @@
       <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.14 1.45-2.14 2.94v5.66H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.11 20.45H3.56V9h3.55v11.45z"/></svg>
     </a>
   </p>
+      <p>
+        © <span id="currentYear"></span> All Rights Reserved.
+        <a href="https://devntric.com" target="_blank" rel="noopener noreferrer">
+            Devntric
+        </a>
+    </p>
 </footer>
 
 <!-- Add item modal -->
@@ -143,7 +197,7 @@
     <h3>Settings</h3>
 
     <div class="settings-group toggle-row">
-      <p class="settings-label">Dark theme</p>
+      <p class="settings-label"> Theme</p>
       <button class="switch" id="modalThemeToggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
     </div>
 
