@@ -1163,30 +1163,10 @@ opacity:1;
 /*================ FOOTER ================*/
 
 .site-footer{
-
-    width:100%;
-
-    padding:24px 18px;
-
-    margin-top:50px;
-
-    background:#fff;
-
-    border-top:1px solid var(--border);
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:10px;
-
-    text-align:center;
-
-    box-sizing:border-box;
+    background: var(--surface);
+    color: var(--text);
+    border-top: 1px solid var(--border);
+    transition: background .3s ease, color .3s ease, border-color .3s ease;
 }
 
 .footer-brand{
