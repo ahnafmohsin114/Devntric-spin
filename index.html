@@ -197,6 +197,12 @@
  
 <div class="modal-overlay" id="appSettingsModal" hidden>
   <div class="modal modal-wide">
+    <button
+    id="settingsCloseX"
+    class="settings-close-x"
+    aria-label="Close Settings">
+    ✕
+</button>
     <h3>Settings</h3>
 
     <div class="settings-group toggle-row">
@@ -244,16 +250,10 @@
       </div>
     </div>
 
-    <button class="btn btn-ghost btn-block" id="moreSettingsBtn" aria-expanded="false">
-      More Settings
-      <svg class="icon icon-sm chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-    </button>
+
 
     <div class="more-settings" id="moreSettingsPanel" hidden>
-      <label class="field">
-        <span>Winner announcement delay (ms)</span>
-        <input type="number" id="announceDelay" value="250" min="0" step="50" />
-      </label>
+
       <label class="field checkbox-field">
         <input type="checkbox" id="allowRepeatWinners" checked />
         <span>Allow repeat winners (Normal mode)</span>

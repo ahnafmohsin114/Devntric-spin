@@ -169,7 +169,7 @@ if (linkedinIconLink) {
     isDark: false,
     rotation: 0,
     spinning: false,
-    announceDelay: 250,
+
     allowRepeatWinners: true,
     removeAfterWin: false,
   };
@@ -275,7 +275,11 @@ const tagline = document.getElementById("tagline");
     syncModalControls();
     appSettingsModal.removeAttribute('hidden');
   });
+  const settingsCloseX = document.getElementById("settingsCloseX");
   document.getElementById('closeAppSettings').addEventListener('click', () => appSettingsModal.setAttribute('hidden',''));
+  settingsCloseX.addEventListener('click', () => {
+    appSettingsModal.setAttribute('hidden','');
+});
   appSettingsModal.addEventListener('click', (e) => { if(e.target === appSettingsModal) appSettingsModal.setAttribute('hidden',''); });
 
   modalThemeToggle.addEventListener('click', () => setDarkMode(!state.isDark));
@@ -349,16 +353,9 @@ const THEME_COLORS = {
   /* ---------------------------------------------------------------------
      More settings (advanced) — lives inside the modal
      --------------------------------------------------------------------- */
-  const moreBtn = document.getElementById('moreSettingsBtn');
-  const morePanel = document.getElementById('moreSettingsPanel');
-  moreBtn.addEventListener('click', () => {
-    const isHidden = morePanel.hasAttribute('hidden');
-    if(isHidden){ morePanel.removeAttribute('hidden'); moreBtn.setAttribute('aria-expanded','true'); }
-    else{ morePanel.setAttribute('hidden',''); moreBtn.setAttribute('aria-expanded','false'); }
-  });
-  document.getElementById('announceDelay').addEventListener('change', e => {
-    state.announceDelay = Math.max(0, parseInt(e.target.value,10) || 0);
-  });
+
+
+
   document.getElementById('allowRepeatWinners').addEventListener('change', e => {
     state.allowRepeatWinners = e.target.checked;
   });
